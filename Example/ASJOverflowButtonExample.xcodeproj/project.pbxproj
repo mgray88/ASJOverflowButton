@@ -51,7 +51,9 @@
 				C0080ACB1C282D4F0009488F /* ASJOverflowButtonExample */,
 				C0080ACA1C282D4F0009488F /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		C0080ACA1C282D4F0009488F /* Products */ = {
 			isa = PBXGroup;

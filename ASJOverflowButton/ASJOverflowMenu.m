@@ -365,13 +365,13 @@ static NSString *const kCellIdentifier = @"cell";
 - (void)setMenuMargins:(MenuMargins)menuMargins
 {
   _menuMargins = menuMargins;
-  _topConstraint.constant = menuMargins.top + kStatusBarHeight;
-  _bottomConstraint.constant = menuMargins.bottom;
-  _rightConstraint.constant = menuMargins.right;
   
   CGFloat menuSize = _menuItemHeight * _items.count;
   CGFloat screenHeight =  self.screenSize.height;
   CGFloat bottomConstant = screenHeight - menuSize - _topConstraint.constant;
+    
+  _topConstraint.constant = menuMargins.top + kStatusBarHeight;
+  _rightConstraint.constant = menuMargins.right;
   
   if (bottomConstant < menuMargins.bottom) {
     bottomConstant = menuMargins.bottom;
