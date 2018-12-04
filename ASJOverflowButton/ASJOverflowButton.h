@@ -30,9 +30,23 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^ItemTapBlock)(ASJOverflowItem *item, NSInteger idx);
-typedef void (^HideMenuBlock)();
+typedef void (^HideMenuBlock)(void);
+
+@class ASJOverflowButton;
+
+@protocol ASJOverflowButtonDataSource <NSObject>
+
+- (void)overflowButton:(ASJOverflowButton*)button
+          populateMenu:(NSMutableArray<ASJOverflowItem*> *)items;
+
+@end
 
 @interface ASJOverflowButton : UIBarButtonItem
+
+/**
+ *  Called in response to menu item selection. Optional.
+ */
+@property (nullable, weak, nonatomic) id <ASJOverflowMenuDelegate> delegate;
 
 /**
  *  The overflow menu's background color. Defaults to white.
@@ -112,13 +126,26 @@ typedef void (^HideMenuBlock)();
 /**
  *  The designated initializer.
  *
- *  @param target A UIViewController to show the overflow menu on.
- *  @param image  The overflow buttn's image.
- *  @param items  An array of ASJOverflowItems to show on the menu.
+ *  @param image  The overflow button's image.
+ *  @param items  An array of ASJOverflowItems to show on the menu. If there
+ *                are no items, the button will not be shown
  *
  *  @return An instance of ASJOverflowButton.
  */
-- (instancetype)initWithImage:(UIImage *)image items:(NSArray<ASJOverflowItem *> *)items NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithImage:(UIImage *)image
+                        items:(NSArray<ASJOverflowItem *> *)items
+  NS_DESIGNATED_INITIALIZER;
+
+/**
+ * Initialize the button with a data source that provides menu items.
+ *
+ *  @param image  The overflow button's image.
+ *  @param dataSurce  Object used to retrieve menu items.
+ *
+ *  @return An instance of ASJOverflowButton.
+ */
+- (instancetype)initWithImage:(UIImage *)image
+                   dataSource:(id <ASJOverflowButtonDataSource>)dataSource;
 
 /**
  *  Don't allow user to use "init".
@@ -153,6 +180,11 @@ typedef void (^HideMenuBlock)();
 @property (nullable, strong, nonatomic) UIColor *backgroundColor;
 
 /**
+ *  Whether or not this menu item is enabled. Default true.
+ */
+@property (assign, nonatomic) BOOL enabled;
+
+/**
  *  A convenience constructor to create ASJOverflowItems.
  *
  *  @param name  The overflow item's name.
@@ -166,11 +198,13 @@ typedef void (^HideMenuBlock)();
  *
  *  @param name  The overflow item's name.
  *  @param image The overflow item's image. Optional.
- *  @param image The overflow item's background color. Optional.
+ *  @param backgroundColor The overflow item's background color. Optional.
  *
  *  @return An instance of ASJOverflowItem.
  */
-+ (ASJOverflowItem *)itemWithName:(NSString *)name image:(nullable UIImage *)image backgroundColor:(nullable UIColor *)backgroundColor;
++ (ASJOverflowItem *)itemWithName:(NSString *)name
+                            image:(nullable UIImage *)image
+                  backgroundColor:(nullable UIColor *)backgroundColor;
 
 @end
 
