@@ -24,13 +24,14 @@
 #import <CoreGraphics/CGBase.h>
 #import <Foundation/NSObjCRuntime.h>
 #import <UIKit/UIView.h>
+#import <UIKit/UITableViewCell.h>
 
 @class ASJOverflowItem;
 
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^ItemTapBlock)(ASJOverflowItem *item, NSInteger idx);
-typedef void (^HideMenuBlock)();
+typedef void (^HideMenuBlock)(void);
 
 typedef NS_ENUM(NSInteger, MenuAnimationType)
 {
@@ -63,7 +64,13 @@ static inline SeparatorInsets SeparatorInsetsMake(CGFloat left, CGFloat right)
 @class ASJOverflowMenu;
 
 @protocol ASJOverflowMenuDelegate <NSObject>
-- (void)overflowMenu:(ASJOverflowMenu *)sender didSelectItem:(ASJOverflowItem *)item atIndex:(NSUInteger)idx;
+@optional
+- (void)overflowMenu:(ASJOverflowMenu *)sender
+       didSelectItem:(ASJOverflowItem *)item
+             atIndex:(NSUInteger)idx;
+- (void)overflowMenu:(ASJOverflowMenu *)sender
+       customizeCell:(UITableViewCell *)cell
+             forItem:(ASJOverflowItem *)item;
 @end
 
 @interface ASJOverflowMenu : UIView

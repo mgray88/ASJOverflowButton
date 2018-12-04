@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ASJOverflowMenu.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController<ASJOverflowMenuDelegate>
 
 @end

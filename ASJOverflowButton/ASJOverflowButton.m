@@ -58,7 +58,6 @@
 - (instancetype)initWithImage:(UIImage *)image items:(NSArray<ASJOverflowItem *> *)items
 {
   NSAssert(image, @"You must provide an image for the overflow button.");
-  NSAssert(items.count, @"You must provide at least one ASJOverflowItem.");
   
   self = [super init];
   if (self)
@@ -68,6 +67,17 @@
     [self setup];
   }
   return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image
+                   dataSource:(id<ASJOverflowButtonDataSource>)dataSource
+{
+  NSAssert(image, @"You must provide an image for the overflow button.");
+  
+  NSMutableArray<ASJOverflowItem *> *items = [NSMutableArray new];
+  [dataSource overflowButton:self populateMenu:items];
+  
+  return [self initWithImage:image items:items];
 }
 
 #pragma mark - Setup
@@ -110,14 +120,16 @@
 
 - (void)setupCustomView
 {
-  UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-  
-  button.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
-  button.autoresizingMask = self.autoresizingMasks;
-  [button setImage:_buttonImage forState:UIControlStateNormal];
-  [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
-  
-  self.customView = button;
+  if (_items.count > 0) {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    button.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
+    button.autoresizingMask = self.autoresizingMasks;
+    [button setImage:_buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.customView = button;
+  }
 }
 
 - (void)buttonTapped:(id)sender
@@ -137,7 +149,7 @@
   [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState
                    animations:^
    {
-     _overflowMenu.alpha = 1.0f;
+     self->_overflowMenu.alpha = 1.0f;
    } completion:nil];
 }
 
@@ -146,7 +158,7 @@
   [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState
                    animations:^
    {
-     _overflowMenu.alpha = 0.0f;
+     self->_overflowMenu.alpha = 0.0f;
    } completion:^(BOOL finished)
    {
      [self destroyWindowAndMenu];
@@ -174,6 +186,7 @@
   NSBundle *bundle = [NSBundle bundleForClass:[self class]];
   
   _overflowMenu = (ASJOverflowMenu *)[bundle loadNibNamed:nibName owner:nil options:nil].firstObject;
+  _overflowMenu.delegate = _delegate;
   _overflowMenu.autoresizingMask = self.autoresizingMasks;
   _overflowMenu.frame = _overflowWindow.bounds;
   
@@ -221,7 +234,6 @@
        weakSelf.hideMenuBlock();
      }
    }];
-  [_overflowMenu setDelegate:_delegate];
 }
 
 - (void)destroyWindowAndMenu
@@ -243,17 +255,18 @@
 
 + (ASJOverflowItem *)itemWithName:(NSString *)name
 {
-  ASJOverflowItem *item = [[ASJOverflowItem alloc] init];
-  item.name = name;
-  return item;
+  return [self itemWithName:name image:nil backgroundColor:nil];
 }
 
-+ (ASJOverflowItem *)itemWithName:(NSString *)name image:(UIImage *)image backgroundColor:(nullable UIColor *)backgroundColor
++ (ASJOverflowItem *)itemWithName:(NSString *)name
+                            image:(nullable UIImage *)image
+                  backgroundColor:(nullable UIColor *)backgroundColor
 {
   ASJOverflowItem *item = [[ASJOverflowItem alloc] init];
   item.name = name;
   item.image = image;
   item.backgroundColor = backgroundColor;
+  item.enabled = YES;
   return item;
 }
 

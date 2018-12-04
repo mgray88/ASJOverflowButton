@@ -153,11 +153,11 @@ static NSString *const kCellIdentifier = @"cell";
   
   [UIView animateWithDuration:0.4f animations:^
    {
-     _tableContainerView.alpha = 1.0f;
-     _tableContainerView.transform = CGAffineTransformIdentity;
+     self->_tableContainerView.alpha = 1.0f;
+     self->_tableContainerView.transform = CGAffineTransformIdentity;
    } completion:^(BOOL finished)
    {
-     _hasAnimatedMenu = YES;
+     self->_hasAnimatedMenu = YES;
    }];
 }
 
@@ -226,6 +226,8 @@ static NSString *const kCellIdentifier = @"cell";
     [cell setInsets:_separatorInsets];
   }
   
+  ASJOverflowItem *item = _items[idxPath.row];
+  
   cell.backgroundColor = _menuBackgroundColor;
   cell.textLabel.textColor = _itemTextColor;
   cell.textLabel.font = _itemFont;
@@ -234,22 +236,16 @@ static NSString *const kCellIdentifier = @"cell";
   background.backgroundColor = _itemHighlightedColor;
   cell.selectedBackgroundView = background;
   
-  ASJOverflowItem *item = _items[idxPath.row];
   cell.textLabel.text = item.name;
   cell.textLabel.backgroundColor = [UIColor clearColor];
   
-  if (item.image != nil) {
-    cell.imageView.image = item.image;
-  }
-  else {
-    cell.imageView.image = nil;
-  }
+  cell.imageView.image = item.image;
   
-  if (item.backgroundColor != nil) {
-    cell.contentView.backgroundColor = item.backgroundColor;
-  }
-  else {
-    cell.contentView.backgroundColor = nil;
+  cell.contentView.backgroundColor = item.backgroundColor;
+  
+  if (_delegate && [_delegate respondsToSelector:
+                   @selector(overflowMenu:customizeCell:forItem:)]) {
+    [_delegate overflowMenu:self customizeCell:cell forItem:item];
   }
 }
 
@@ -260,12 +256,20 @@ static NSString *const kCellIdentifier = @"cell";
   return _menuItemHeight;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  if (!_items[indexPath.row].enabled) {
+    return nil;
+  }
+  return indexPath;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
   if (_itemTapBlock) {
     _itemTapBlock(_items[indexPath.row], indexPath.row);
   }
-  if (_delegate) {
+  if (_delegate && [_delegate respondsToSelector:
+                    @selector(overflowMenu:didSelectItem:atIndex:)]) {
     [_delegate overflowMenu:self didSelectItem:_items[indexPath.row] atIndex:indexPath.row];
   }
   [self hideMenu];
