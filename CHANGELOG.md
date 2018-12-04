@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.6](https://github.com/mgray88/ASJOverflowButton/releases/tag/1.6)
+Released on Tuesday, 4 Dec, 2018
+
+#### Added
+* Merged [pull request #5](https://github.com/sudeepjaiswal/ASJOverflowButton/pull/5)
+* Extended `ASJOverflowMenuDelegate` protocol with `[overflowMenu:customizeCell:forItem:]` which is called by the table view's data source right before display
+* Added `ASJOverflowButtonDataSource` protocol which can provide menu items with `[overflowButton:populateMenu:]`
+* The data source object can be passed into a new initializer on the `ASJOverflowButton`
+* Added `enabled` property to `ASJOverflowItem` to disable menu item selection from being passed to either the `ItemTapBlock` or the delegate's `[overflowMenu:didSelectItem:atIndex:]` selector
+
 ## [1.5.2](https://github.com/sudeepjaiswal/ASJOverflowButton/releases/tag/1.5.2)
 Released on Wednesday, 2 Nov, 2016.
 
