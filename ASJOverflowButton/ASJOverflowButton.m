@@ -123,7 +123,7 @@
   if (_items.count > 0) {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    button.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
+    button.frame = CGRectMake(0.0f, 0.0f, 18.0f, 44.0f);
     button.autoresizingMask = self.autoresizingMasks;
     [button setImage:_buttonImage forState:UIControlStateNormal];
     [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
