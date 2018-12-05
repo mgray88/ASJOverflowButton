@@ -7,7 +7,7 @@ Working on projects that are simultanously being developed on both iOS and Andro
 CocoaPods is the preferred way to install this library. Add this command to your `Podfile`:
 
 ```ruby
-pod 'ASJOverflowButton'
+pod 'ASJOverflowButton', :git => 'https://github.com/mgray88/ASJOverflowButton.git'
 ```
 
 # Usage
